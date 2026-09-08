@@ -34,6 +34,9 @@
     const productList = document.getElementById("product-list");
     const search = document.getElementById("search");
 
+    const websiteURL =
+        "https://adwxt.github.io/smart-product-portal/Project/";
+
     function displayProducts(productArray) {
 
         productList.innerHTML = "";
@@ -55,9 +58,12 @@
 
                     <div class="qr-code" id="qr-${product.id}"></div>
 
-                    <p class="qr-text">Scan for product details</p>
+                    <p class="qr-text">
+                        Scan for product details
+                    </p>
 
-                    <a class="button" href="product.html?id=${product.id}">
+                    <a class="button"
+                       href="product.html?id=${product.id}">
                         View Details
                     </a>
 
@@ -68,15 +74,16 @@
         productArray.forEach(function(product) {
 
             const productURL =
-                window.location.href.split("?")[0]
-                .replace("products.html", "product.html")
-                + "?id=" + product.id;
+                websiteURL + "product.html?id=" + product.id;
 
-            new QRCode(document.getElementById("qr-" + product.id), {
-                text: productURL,
-                width: 120,
-                height: 120
-            });
+            new QRCode(
+                document.getElementById("qr-" + product.id),
+                {
+                    text: productURL,
+                    width: 120,
+                    height: 120
+                }
+            );
         });
     }
 
