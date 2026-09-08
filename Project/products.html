@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - FreshMart</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>FreshMart Grocery Store</h1>
+    <p>Our Products</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+</nav>
+
+<div class="search-box">
+    <input type="text" id="search" placeholder="Search products...">
+</div>
+
+<main class="products" id="product-list"></main>
+
+<script src="products.js"></script>
+
+<script>
+    const productList = document.getElementById("product-list");
+    const search = document.getElementById("search");
+
+    function displayProducts(productArray) {
+
+        productList.innerHTML = "";
+
+        productArray.forEach(function(product) {
+
+            productList.innerHTML += `
+                <div class="product-card">
+
+                    <img src="${product.image}" alt="${product.name}">
+
+                    <h2>${product.name}</h2>
+
+                    <p class="price">₹${product.price}</p>
+
+                    <p>${product.availability}</p>
+
+                    <p>${product.offer}</p>
+
+                    <div class="qr-code" id="qr-${product.id}"></div>
+
+                    <p class="qr-text">Scan for product details</p>
+
+                    <a class="button" href="product.html?id=${product.id}">
+                        View Details
+                    </a>
+
+                </div>
+            `;
+        });
+
+        productArray.forEach(function(product) {
+
+            const productURL =
+                window.location.href.split("?")[0]
+                .replace("products.html", "product.html")
+                + "?id=" + product.id;
+
+            new QRCode(document.getElementById("qr-" + product.id), {
+                text: productURL,
+                width: 120,
+                height: 120
+            });
+        });
+    }
+
+    displayProducts(products);
+
+    search.addEventListener("input", function() {
+
+        const searchText = search.value.toLowerCase();
+
+        const filteredProducts = products.filter(function(product) {
+            return product.name.toLowerCase().includes(searchText);
+        });
+
+        displayProducts(filteredProducts);
+    });
+</script>
+
+</body>
+</html>

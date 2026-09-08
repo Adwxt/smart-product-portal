@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - FreshMart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>FreshMart Grocery Store</h1>
+    <p>Product Details</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+</nav>
+
+<main class="product-details" id="product-details"></main>
+
+<script src="products.js"></script>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get("id");
+
+    const product = products.find(function(item) {
+        return item.id === productId;
+    });
+
+    const productDetails = document.getElementById("product-details");
+
+    if (product) {
+
+        productDetails.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+
+            <div>
+                <h2>${product.name}</h2>
+
+                <p><strong>Price:</strong> ₹${product.price}</p>
+
+                <p><strong>Availability:</strong> ${product.availability}</p>
+
+                <p><strong>Offer:</strong> ${product.offer}</p>
+
+                <p>
+                    <strong>Description:</strong>
+                    ${product.description}
+                </p>
+
+                <a class="button" href="products.html">
+                    Back to Products
+                </a>
+            </div>
+        `;
+
+    } else {
+
+        productDetails.innerHTML = `
+            <h2>Product Not Found</h2>
+            <p>The requested product does not exist.</p>
+        `;
+    }
+</script>
+
+</body>
+</html>
