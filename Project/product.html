@@ -35,6 +35,12 @@
 
     if (product) {
 
+        const message = encodeURIComponent(
+            "Hello FreshMart, I am interested in " +
+            product.name +
+            ". Is it available?"
+        );
+
         productDetails.innerHTML = `
             <img src="${product.image}" alt="${product.name}">
 
@@ -51,6 +57,14 @@
                     <strong>Description:</strong>
                     ${product.description}
                 </p>
+
+                <a class="button"
+                   href="https://wa.me/919284353907?text=${message}"
+                   target="_blank">
+                    Order / Contact on WhatsApp
+                </a>
+
+                <br><br>
 
                 <a class="button" href="products.html">
                     Back to Products
