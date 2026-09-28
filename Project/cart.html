@@ -30,7 +30,14 @@
 
     <div class="cart-actions">
         <a class="button" href="products.html">Continue Shopping</a>
-        <button class="button" id="checkout-button">Demo Checkout</button>
+
+        <a class="button" id="whatsapp-order" href="#" target="_blank" rel="noopener">
+            Order by Contacting Us
+        </a>
+
+        <button class="button" id="checkout-button">
+            Demo Checkout
+        </button>
     </div>
 
     <p id="checkout-message"></p>
@@ -141,6 +148,42 @@
 
         checkoutMessage.textContent =
             "Demo checkout completed. No real order or payment was processed.";
+    });
+
+    document.getElementById("whatsapp-order").addEventListener("click", function(event) {
+        event.preventDefault();
+
+        const cart = getCart();
+
+        if (cart.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        let message = "Hello FreshMart! I would like to order these items:\n\n";
+        let total = 0;
+
+        cart.forEach(function(cartItem) {
+            const product = getProductById(cartItem.id);
+
+            if (!product) return;
+
+            const subtotal = product.price * cartItem.quantity;
+            total += subtotal;
+
+            message += product.name +
+                " x " + cartItem.quantity +
+                " = ₹" + subtotal + "\n";
+        });
+
+        message += "\nTotal: ₹" + total;
+        message += "\nPlease contact me to confirm the order.";
+
+        const whatsappURL =
+            "https://wa.me/919284353907?text=" +
+            encodeURIComponent(message);
+
+        window.open(whatsappURL, "_blank", "noopener");
     });
 
     renderCart();
