@@ -17,11 +17,14 @@
 <nav>
     <a href="index.html">Home</a>
     <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
 </nav>
 
 <main class="product-details" id="product-details"></main>
 
 <script src="products.js"></script>
+<script src="shop.js"></script>
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +37,6 @@
     const productDetails = document.getElementById("product-details");
 
     if (product) {
-
         const message = encodeURIComponent(
             "Hello FreshMart, I am interested in " +
             product.name +
@@ -48,9 +50,7 @@
                 <h2>${product.name}</h2>
 
                 <p><strong>Price:</strong> ₹${product.price}</p>
-
                 <p><strong>Availability:</strong> ${product.availability}</p>
-
                 <p><strong>Offer:</strong> ${product.offer}</p>
 
                 <p>
@@ -58,9 +58,17 @@
                     ${product.description}
                 </p>
 
+                <button class="button cart-button"
+                        onclick="addToCart('${product.id}')">
+                    Add to Cart
+                </button>
+
+                <br><br>
+
                 <a class="button"
                    href="https://wa.me/919284353907?text=${message}"
-                   target="_blank">
+                   target="_blank"
+                   rel="noopener">
                     Order / Contact on WhatsApp
                 </a>
 
@@ -71,9 +79,7 @@
                 </a>
             </div>
         `;
-
     } else {
-
         productDetails.innerHTML = `
             <h2>Product Not Found</h2>
             <p>The requested product does not exist.</p>
