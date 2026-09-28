@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Login - FreshMart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>FreshMart Grocery Store</h1>
+    <p>Demo Customer Login</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
+</nav>
+
+<main class="login-container">
+    <h2>Login</h2>
+
+    <p class="demo-note">
+        Demo login for project demonstration only.
+        Enter any name and password.
+    </p>
+
+    <form id="login-form">
+        <label for="username">Name</label>
+        <input type="text" id="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+
+        <button class="button" type="submit">Login</button>
+    </form>
+
+    <p id="login-message"></p>
+</main>
+
+<script src="products.js"></script>
+<script src="shop.js"></script>
+
+<script>
+    const loginForm = document.getElementById("login-form");
+    const loginMessage = document.getElementById("login-message");
+
+    loginForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !password) {
+            loginMessage.textContent = "Please enter your name and password.";
+            return;
+        }
+
+        localStorage.setItem("freshmartUser", username);
+
+        const nextPage = new URLSearchParams(window.location.search).get("next");
+
+        if (nextPage === "cart") {
+            window.location.href = "cart.html";
+        } else {
+            window.location.href = "products.html";
+        }
+    });
+</script>
+
+</body>
+</html>
