@@ -6,7 +6,6 @@
     <title>Products - FreshMart</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
@@ -20,6 +19,8 @@
 <nav>
     <a href="index.html">Home</a>
     <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="login.html">Login</a>
 </nav>
 
 <div class="search-box">
@@ -29,6 +30,7 @@
 <main class="products" id="product-list"></main>
 
 <script src="products.js"></script>
+<script src="shop.js"></script>
 
 <script>
     const productList = document.getElementById("product-list");
@@ -38,11 +40,14 @@
         "https://adwxt.github.io/smart-product-portal/Project/";
 
     function displayProducts(productArray) {
-
         productList.innerHTML = "";
 
-        productArray.forEach(function(product) {
+        if (productArray.length === 0) {
+            productList.innerHTML = "<p>No products found.</p>";
+            return;
+        }
 
+        productArray.forEach(function(product) {
             productList.innerHTML += `
                 <div class="product-card">
 
@@ -53,26 +58,27 @@
                     <p class="price">₹${product.price}</p>
 
                     <p>${product.availability}</p>
-
                     <p>${product.offer}</p>
 
                     <div class="qr-code" id="qr-${product.id}"></div>
 
-                    <p class="qr-text">
-                        Scan for product details
-                    </p>
+                    <p class="qr-text">Scan for product details</p>
 
                     <a class="button"
                        href="product.html?id=${product.id}">
                         View Details
                     </a>
 
+                    <button class="button cart-button"
+                            onclick="addToCart('${product.id}')">
+                        Add to Cart
+                    </button>
+
                 </div>
             `;
         });
 
         productArray.forEach(function(product) {
-
             const productURL =
                 websiteURL + "product.html?id=" + product.id;
 
@@ -90,7 +96,6 @@
     displayProducts(products);
 
     search.addEventListener("input", function() {
-
         const searchText = search.value.toLowerCase();
 
         const filteredProducts = products.filter(function(product) {
