@@ -30,6 +30,7 @@ nav {
     gap: 30px;
     padding: 15px;
     background-color: white;
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -61,7 +62,19 @@ nav a {
     background-color: #222;
     color: white;
     text-decoration: none;
+    border: none;
     border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #444;
+}
+
+.cart-button {
+    margin-top: 12px;
 }
 
 .features {
@@ -187,13 +200,127 @@ nav a {
     line-height: 1.4;
 }
 
+/* Login page */
+
+.login-container {
+    width: 420px;
+    max-width: calc(100% - 30px);
+    margin: 45px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.demo-note {
+    padding: 12px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.login-container button {
+    margin-top: 10px;
+}
+
+/* Cart page */
+
+.cart-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 25px;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.cart-container h2 {
+    margin-top: 0;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-info h3 {
+    margin-top: 0;
+}
+
+.quantity-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.small-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #222;
+    color: white;
+    cursor: pointer;
+}
+
+.remove-button {
+    background-color: #9b2424;
+}
+
+.cart-total {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.cart-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+#checkout-message {
+    line-height: 1.5;
+}
+
 footer {
     text-align: center;
     padding: 20px;
 }
 
 @media (max-width: 700px) {
-
     header {
         padding: 25px 15px;
     }
@@ -203,7 +330,7 @@ footer {
     }
 
     nav {
-        gap: 25px;
+        gap: 20px;
     }
 
     .hero {
@@ -249,5 +376,28 @@ footer {
     .feature-card {
         width: 100%;
         max-width: 320px;
+    }
+
+    .cart-container {
+        width: calc(100% - 24px);
+        padding: 18px;
+    }
+
+    .cart-item {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .cart-item img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .cart-item-info h3 {
+        font-size: 17px;
+    }
+
+    .cart-actions .button {
+        width: 100%;
     }
 }
