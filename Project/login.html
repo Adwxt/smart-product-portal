@@ -3,73 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Login - FreshMart</title>
+    <meta name="theme-color" content="#0b7a45">
+    <title>Login — FreshMart</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
-
-<header>
-    <h1>FreshMart Grocery Store</h1>
-    <p>Demo Customer Login</p>
+<body class="login-page">
+<header class="site-header">
+    <div class="nav-shell">
+        <a class="brand" href="index.html" aria-label="FreshMart Home"><img src="images/freshmart-logo.jpg" alt="FreshMart Grocery Store"></a>
+        <nav id="main-nav" aria-label="Main navigation"></nav>
+    </div>
 </header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart</a>
-    <a href="login.html">Login</a>
-</nav>
-
-<main class="login-container">
-    <h2>Login</h2>
-
-    <p class="demo-note">
-        Enter any name and password.
-    </p>
-
-    <form id="login-form">
-        <label for="username">Name</label>
-        <input type="text" id="username" required>
-
-        <label for="password">Password</label>
-        <input type="password" id="password" required>
-
-        <button class="button" type="submit">Login</button>
-    </form>
-
-    <p id="login-message"></p>
+<main class="login-main">
+    <section class="login-container">
+        <div class="login-logo"><img src="images/freshmart-logo.jpg" alt="FreshMart"></div>
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>Login to FreshMart</h1>
+        <p class="login-subtitle">Sign in to save your cart and continue shopping.</p>
+        <form id="login-form">
+            <label for="username">Name</label>
+            <input type="text" id="username" placeholder="Enter your name" autocomplete="name" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+            <button class="button button-primary full" type="submit">Continue →</button>
+        </form>
+        <p id="login-message" class="form-message"></p>
+    </section>
 </main>
 
 <script src="products.js"></script>
 <script src="shop.js"></script>
-
 <script>
-    const loginForm = document.getElementById("login-form");
-    const loginMessage = document.getElementById("login-message");
-
-    loginForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value;
-
-        if (!username || !password) {
-            loginMessage.textContent = "Please enter your name and password.";
-            return;
-        }
-
-        localStorage.setItem("freshmartUser", username);
-
-        const nextPage = new URLSearchParams(window.location.search).get("next");
-
-        if (nextPage === "cart") {
-            window.location.href = "cart.html";
-        } else {
-            window.location.href = "products.html";
-        }
-    });
+const loginForm = document.getElementById("login-form");
+const loginMessage = document.getElementById("login-message");
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    if (!username || !password) {
+        loginMessage.textContent = "Please enter your name and password.";
+        return;
+    }
+    localStorage.setItem("freshmartUser", username);
+    const nextPage = new URLSearchParams(window.location.search).get("next");
+    window.location.href = nextPage === "cart" ? "cart.html" : "products.html";
+});
 </script>
-
 </body>
 </html>
