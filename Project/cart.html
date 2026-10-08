@@ -3,191 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart - FreshMart</title>
+    <meta name="theme-color" content="#0b7a45">
+    <title>Your Cart — FreshMart</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<header>
-    <h1>FreshMart Grocery Store</h1>
-    <p>Your Shopping Cart</p>
+<header class="site-header">
+    <div class="nav-shell">
+        <a class="brand" href="index.html" aria-label="FreshMart Home"><img src="images/freshmart-logo.jpg" alt="FreshMart Grocery Store"></a>
+        <nav id="main-nav" aria-label="Main navigation"></nav>
+    </div>
 </header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart</a>
-    <a href="login.html">Login</a>
-</nav>
+<main class="page-main">
+    <section class="page-heading compact-heading">
+        <div><span class="eyebrow">YOUR BAG</span><h1>Shopping cart</h1><p>Review your items before contacting FreshMart.</p></div>
+    </section>
 
-<main class="cart-container">
-    <h2>Shopping Cart</h2>
-
-    <div id="cart-items"></div>
-
-    <div class="cart-total" id="cart-total"></div>
-
-    <div class="cart-actions">
-        <a class="button" href="products.html">Continue Shopping</a>
-
-        <a class="button" id="whatsapp-order" href="#" target="_blank" rel="noopener">
-            Order by Contacting Us
-        </a>
-
-        <button class="button" id="checkout-button">
-            Demo Checkout
-        </button>
-    </div>
-
-    <p id="checkout-message"></p>
+    <section class="cart-layout">
+        <div class="cart-container">
+            <div id="cart-items"></div>
+            <div id="cart-empty" class="empty-state hidden"><div class="empty-icon">🛒</div><h2>Your cart is empty</h2><p>Add something delicious from the products page.</p><a class="button button-primary" href="products.html">Start Shopping</a></div>
+        </div>
+        <aside class="cart-summary">
+            <span class="eyebrow">ORDER SUMMARY</span>
+            <h2>Cart total</h2>
+            <div class="summary-row"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+            <div class="summary-row"><span>Delivery</span><span>Contact store</span></div>
+            <div class="summary-total"><span>Total</span><strong id="cart-total">₹0</strong></div>
+            <a class="button whatsapp-button full" id="whatsapp-order" href="#" target="_blank" rel="noopener">Order on WhatsApp ↗</a>
+            <button class="button button-primary full" id="checkout-button">Demo Checkout</button>
+            <p class="summary-note">Checkout is a project demo. No real payment is processed.</p>
+            <p id="checkout-message" class="success-message"></p>
+        </aside>
+    </section>
 </main>
+
+<footer class="site-footer">
+    <div><strong>FreshMart</strong><span>Smart grocery shopping, made simple.</span></div>
+    <p>© 2026 FreshMart Grocery Store</p>
+</footer>
 
 <script src="products.js"></script>
 <script src="shop.js"></script>
-
 <script>
-    const cartItems = document.getElementById("cart-items");
-    const cartTotal = document.getElementById("cart-total");
-    const checkoutMessage = document.getElementById("checkout-message");
+const cartItems = document.getElementById("cart-items");
+const cartEmpty = document.getElementById("cart-empty");
+const subtotalEl = document.getElementById("subtotal");
+const cartTotal = document.getElementById("cart-total");
+const checkoutMessage = document.getElementById("checkout-message");
 
-    function renderCart() {
-        const cart = getCart();
+function renderCart() {
+    const cart = getCart();
+    cartItems.innerHTML = "";
+    checkoutMessage.textContent = "";
 
-        cartItems.innerHTML = "";
-        checkoutMessage.textContent = "";
+    if (cart.length === 0) {
+        cartEmpty.classList.remove("hidden");
+        subtotalEl.textContent = "₹0";
+        cartTotal.textContent = "₹0";
+        return;
+    }
 
-        if (cart.length === 0) {
-            cartItems.innerHTML = "<p>Your cart is empty.</p>";
-            cartTotal.textContent = "";
-            return;
-        }
+    cartEmpty.classList.add("hidden");
+    let total = 0;
 
-        let total = 0;
+    cart.forEach(function(cartItem) {
+        const product = getProductById(cartItem.id);
+        if (!product) return;
+        const itemTotal = product.price * cartItem.quantity;
+        total += itemTotal;
 
-        cart.forEach(function(cartItem) {
-            const product = getProductById(cartItem.id);
-
-            if (!product) return;
-
-            const itemTotal = product.price * cartItem.quantity;
-            total += itemTotal;
-
-            cartItems.innerHTML += `
-                <div class="cart-item">
-                    <img src="${product.image}" alt="${product.name}">
-
-                    <div class="cart-item-info">
-                        <h3>${product.name}</h3>
-                        <p>Price: ₹${product.price}</p>
-                        <p>Quantity: ${cartItem.quantity}</p>
-                        <p><strong>Subtotal: ₹${itemTotal}</strong></p>
-
+        cartItems.innerHTML += `
+            <article class="cart-item">
+                <img src="${product.image}" alt="${product.name}">
+                <div class="cart-item-info">
+                    <div class="cart-item-top"><span class="stock"><i></i> In Stock</span><button class="remove-link" onclick="removeFromCart('${product.id}')">Remove</button></div>
+                    <h3>${product.name}</h3>
+                    <p>₹${product.price} each</p>
+                    <div class="cart-item-bottom">
                         <div class="quantity-controls">
-                            <button class="small-button"
-                                    onclick="changeQuantity('${product.id}', -1)">
-                                −
-                            </button>
-
-                            <button class="small-button"
-                                    onclick="changeQuantity('${product.id}', 1)">
-                                +
-                            </button>
-
-                            <button class="small-button remove-button"
-                                    onclick="removeFromCart('${product.id}')">
-                                Remove
-                            </button>
+                            <button class="quantity-button" onclick="changeQuantity('${product.id}', -1)">−</button>
+                            <strong>${cartItem.quantity}</strong>
+                            <button class="quantity-button" onclick="changeQuantity('${product.id}', 1)">+</button>
                         </div>
+                        <strong class="item-total">₹${itemTotal}</strong>
                     </div>
                 </div>
-            `;
-        });
-
-        cartTotal.innerHTML = `<h3>Total: ₹${total}</h3>`;
-    }
-
-    function changeQuantity(productId, change) {
-        const cart = getCart();
-        const item = cart.find(item => item.id === productId);
-
-        if (!item) return;
-
-        item.quantity += change;
-
-        if (item.quantity <= 0) {
-            const updatedCart = cart.filter(item => item.id !== productId);
-            saveCart(updatedCart);
-        } else {
-            saveCart(cart);
-        }
-
-        updateNavigation();
-        renderCart();
-    }
-
-    function removeFromCart(productId) {
-        const updatedCart = getCart().filter(item => item.id !== productId);
-
-        saveCart(updatedCart);
-        updateNavigation();
-        renderCart();
-    }
-
-    document.getElementById("checkout-button").addEventListener("click", function() {
-        if (!isLoggedIn()) {
-            alert("Please login before checkout.");
-            window.location.href = "login.html?next=cart";
-            return;
-        }
-
-        if (getCart().length === 0) {
-            checkoutMessage.textContent = "Your cart is empty.";
-            return;
-        }
-
-        checkoutMessage.textContent =
-            "Demo checkout completed. No real order or payment was processed.";
+            </article>`;
     });
 
-    document.getElementById("whatsapp-order").addEventListener("click", function(event) {
-        event.preventDefault();
+    subtotalEl.textContent = `₹${total}`;
+    cartTotal.textContent = `₹${total}`;
+}
 
-        const cart = getCart();
-
-        if (cart.length === 0) {
-            alert("Your cart is empty.");
-            return;
-        }
-
-        let message = "Hello FreshMart! I would like to order these items:\n\n";
-        let total = 0;
-
-        cart.forEach(function(cartItem) {
-            const product = getProductById(cartItem.id);
-
-            if (!product) return;
-
-            const subtotal = product.price * cartItem.quantity;
-            total += subtotal;
-
-            message += product.name +
-                " x " + cartItem.quantity +
-                " = ₹" + subtotal + "\n";
-        });
-
-        message += "\nTotal: ₹" + total;
-        message += "\nPlease contact me to confirm the order.";
-
-        const whatsappURL =
-            "https://wa.me/919284353907?text=" +
-            encodeURIComponent(message);
-
-        window.open(whatsappURL, "_blank", "noopener");
-    });
-
+function changeQuantity(productId, change) {
+    const cart = getCart();
+    const item = cart.find(item => item.id === productId);
+    if (!item) return;
+    item.quantity += change;
+    if (item.quantity <= 0) saveCart(cart.filter(item => item.id !== productId));
+    else saveCart(cart);
+    updateNavigation();
     renderCart();
-</script>
+}
 
+function removeFromCart(productId) {
+    saveCart(getCart().filter(item => item.id !== productId));
+    updateNavigation();
+    renderCart();
+}
+
+document.getElementById("checkout-button").addEventListener("click", function() {
+    if (!isLoggedIn()) {
+        alert("Please login before checkout.");
+        window.location.href = "login.html?next=cart";
+        return;
+    }
+    if (getCart().length === 0) {
+        checkoutMessage.textContent = "Your cart is empty.";
+        return;
+    }
+    checkoutMessage.textContent = "Demo checkout completed. No real order or payment was processed.";
+});
+
+document.getElementById("whatsapp-order").addEventListener("click", function(event) {
+    event.preventDefault();
+    const cart = getCart();
+    if (cart.length === 0) { alert("Your cart is empty."); return; }
+    let message = "Hello FreshMart! I would like to order these items:\n\n";
+    let total = 0;
+    cart.forEach(function(cartItem) {
+        const product = getProductById(cartItem.id);
+        if (!product) return;
+        const subtotal = product.price * cartItem.quantity;
+        total += subtotal;
+        message += `${product.name} x ${cartItem.quantity} = ₹${subtotal}\n`;
+    });
+    message += `\nTotal: ₹${total}\nPlease contact me to confirm the order.`;
+    window.open("https://wa.me/919284353907?text=" + encodeURIComponent(message), "_blank", "noopener");
+});
+
+renderCart();
+</script>
 </body>
 </html>
