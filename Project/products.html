@@ -3,108 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products - FreshMart</title>
+    <meta name="theme-color" content="#0b7a45">
+    <title>Products — FreshMart</title>
     <link rel="stylesheet" href="style.css">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-
 <body>
 
-<header>
-    <h1>FreshMart Grocery Store</h1>
-    <p>Our Products</p>
+<header class="site-header">
+    <div class="nav-shell">
+        <a class="brand" href="index.html" aria-label="FreshMart Home">
+            <img src="images/freshmart-logo.jpg" alt="FreshMart Grocery Store">
+        </a>
+        <nav id="main-nav" aria-label="Main navigation"></nav>
+    </div>
 </header>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="products.html">Products</a>
-    <a href="cart.html">Cart</a>
-    <a href="login.html">Login</a>
-</nav>
+<main class="page-main">
+    <section class="page-heading">
+        <div>
+            <span class="eyebrow">FRESHMART COLLECTION</span>
+            <h1>Everyday essentials.</h1>
+            <p>Browse products, check offers and scan QR codes for instant details.</p>
+        </div>
+        <div class="product-count" id="product-count"></div>
+    </section>
 
-<div class="search-box">
-    <input type="text" id="search" placeholder="Search products...">
-</div>
+    <section class="catalog-toolbar">
+        <div class="search-wrap">
+            <span>⌕</span>
+            <input type="search" id="search" placeholder="Search groceries..." autocomplete="off">
+        </div>
+        <span class="search-hint">Try “tea”, “oil”, “atta”...</span>
+    </section>
 
-<main class="products" id="product-list"></main>
+    <section class="products" id="product-list"></section>
+</main>
+
+<footer class="site-footer">
+    <div><strong>FreshMart</strong><span>Smart grocery shopping, made simple.</span></div>
+    <p>© 2026 FreshMart Grocery Store</p>
+</footer>
 
 <script src="products.js"></script>
 <script src="shop.js"></script>
-
 <script>
-    const productList = document.getElementById("product-list");
-    const search = document.getElementById("search");
+const productList = document.getElementById("product-list");
+const search = document.getElementById("search");
+const productCount = document.getElementById("product-count");
+const websiteURL = "https://adwxt.github.io/smart-product-portal/Project/";
 
-    const websiteURL =
-        "https://adwxt.github.io/smart-product-portal/Project/";
+function displayProducts(productArray) {
+    productList.innerHTML = "";
+    productCount.textContent = `${productArray.length} product${productArray.length === 1 ? "" : "s"}`;
 
-    function displayProducts(productArray) {
-        productList.innerHTML = "";
-
-        if (productArray.length === 0) {
-            productList.innerHTML = "<p>No products found.</p>";
-            return;
-        }
-
-        productArray.forEach(function(product) {
-            productList.innerHTML += `
-                <div class="product-card">
-
-                    <img src="${product.image}" alt="${product.name}">
-
-                    <h2>${product.name}</h2>
-
-                    <p class="price">₹${product.price}</p>
-
-                    <p>${product.availability}</p>
-                    <p>${product.offer}</p>
-
-                    <div class="qr-code" id="qr-${product.id}"></div>
-
-                    <p class="qr-text">Scan for product details</p>
-
-                    <a class="button"
-                       href="product.html?id=${product.id}">
-                        View Details
-                    </a>
-
-                    <button class="button cart-button"
-                            onclick="addToCart('${product.id}')">
-                        Add to Cart
-                    </button>
-
-                </div>
-            `;
-        });
-
-        productArray.forEach(function(product) {
-            const productURL =
-                websiteURL + "product.html?id=" + product.id;
-
-            new QRCode(
-                document.getElementById("qr-" + product.id),
-                {
-                    text: productURL,
-                    width: 120,
-                    height: 120
-                }
-            );
-        });
+    if (productArray.length === 0) {
+        productList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">⌕</div>
+                <h2>No products found</h2>
+                <p>Try a different search term.</p>
+            </div>`;
+        return;
     }
 
-    displayProducts(products);
+    productArray.forEach(function(product) {
+        const offer = product.offer !== "No Offer" ? `<span class="badge badge-offer">${product.offer}</span>` : "";
+        const stock = product.availability === "In Stock"
+            ? `<span class="stock"><i></i> In Stock</span>`
+            : `<span class="stock stock-out">${product.availability}</span>`;
 
-    search.addEventListener("input", function() {
-        const searchText = search.value.toLowerCase();
-
-        const filteredProducts = products.filter(function(product) {
-            return product.name.toLowerCase().includes(searchText);
-        });
-
-        displayProducts(filteredProducts);
+        productList.innerHTML += `
+            <article class="product-card">
+                <a class="product-image-wrap" href="product.html?id=${product.id}">
+                    ${offer}
+                    <img src="${product.image}" alt="${product.name}" loading="lazy">
+                </a>
+                <div class="product-info">
+                    <div class="product-meta">${stock}</div>
+                    <h2>${product.name}</h2>
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-bottom">
+                        <strong class="price">₹${product.price}</strong>
+                        <a class="view-link" href="product.html?id=${product.id}">View →</a>
+                    </div>
+                    <div class="product-actions">
+                        <button class="button button-primary compact" onclick="addToCart('${product.id}', this)">Add to Cart</button>
+                        <button class="qr-toggle" type="button" onclick="toggleQR('${product.id}')">▦ QR</button>
+                    </div>
+                    <div class="qr-panel" id="qr-panel-${product.id}">
+                        <div class="qr-code" id="qr-${product.id}"></div>
+                        <span>Scan for product details</span>
+                    </div>
+                </div>
+            </article>`;
     });
-</script>
 
+    productArray.forEach(function(product) {
+        new QRCode(document.getElementById("qr-" + product.id), {
+            text: websiteURL + "product.html?id=" + product.id,
+            width: 120,
+            height: 120
+        });
+    });
+}
+
+function toggleQR(id) {
+    document.getElementById("qr-panel-" + id).classList.toggle("show");
+}
+
+displayProducts(products);
+search.addEventListener("input", function() {
+    const searchText = search.value.toLowerCase().trim();
+    displayProducts(products.filter(function(product) {
+        return product.name.toLowerCase().includes(searchText) || product.description.toLowerCase().includes(searchText);
+    }));
+});
+</script>
 </body>
 </html>
