@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0b7a45">
-    <title>Product Details — FreshMart</title>
+    <title>Login — FreshMart</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-page">
 <header class="site-header">
     <div class="nav-shell">
         <a class="brand" href="index.html" aria-label="FreshMart Home"><img src="images/freshmart-logo.jpg" alt="FreshMart Grocery Store"></a>
@@ -15,52 +15,40 @@
     </div>
 </header>
 
-<main class="page-main">
-    <div class="breadcrumb"><a href="products.html">Products</a><span>/</span><span>Product details</span></div>
-    <section class="product-details" id="product-details"></section>
+<main class="login-main">
+    <section class="login-container">
+        <div class="login-logo"><img src="images/freshmart-logo.jpg" alt="FreshMart"></div>
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>Login to FreshMart</h1>
+        <p class="login-subtitle">Sign in to save your cart and continue shopping.</p>
+        <form id="login-form">
+            <label for="username">Name</label>
+            <input type="text" id="username" placeholder="Enter your name" autocomplete="name" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+            <button class="button button-primary full" type="submit">Continue →</button>
+        </form>
+        <p id="login-message" class="form-message"></p>
+    </section>
 </main>
-
-<footer class="site-footer">
-    <div><strong>FreshMart</strong><span>Smart grocery shopping, made simple.</span></div>
-    <p>© 2026 FreshMart Grocery Store</p>
-</footer>
 
 <script src="products.js"></script>
 <script src="shop.js"></script>
 <script>
-const productId = new URLSearchParams(window.location.search).get("id");
-const product = products.find(item => item.id === productId);
-const productDetails = document.getElementById("product-details");
-
-if (product) {
-    const message = encodeURIComponent(`Hello FreshMart, I am interested in ${product.name}. Is it available?`);
-    const offer = product.offer !== "No Offer" ? `<span class="badge badge-offer large">${product.offer}</span>` : "";
-    const stock = product.availability === "In Stock" ? `<span class="stock large-stock"><i></i> ${product.availability}</span>` : `<span class="stock stock-out">${product.availability}</span>`;
-
-    productDetails.innerHTML = `
-        <div class="detail-image-card">
-            ${offer}
-            <img src="${product.image}" alt="${product.name}">
-        </div>
-        <div class="detail-content">
-            <div class="detail-kicker">FRESHMART ESSENTIAL</div>
-            <h1>${product.name}</h1>
-            <div class="detail-status">${stock}</div>
-            <div class="detail-price">₹${product.price}</div>
-            <p class="detail-description">${product.description}</p>
-            <div class="detail-info-grid">
-                <div><span>Availability</span><strong>${product.availability}</strong></div>
-                <div><span>Offer</span><strong>${product.offer}</strong></div>
-            </div>
-            <div class="detail-actions">
-                <button class="button button-primary" onclick="addToCart('${product.id}', this)">Add to Cart</button>
-                <a class="button whatsapp-button" href="https://wa.me/919284353907?text=${message}" target="_blank" rel="noopener">WhatsApp Us ↗</a>
-            </div>
-            <a class="back-link" href="products.html">← Back to products</a>
-        </div>`;
-} else {
-    productDetails.innerHTML = `<div class="empty-state"><div class="empty-icon">?</div><h2>Product not found</h2><p>The requested product does not exist.</p><a class="button button-primary" href="products.html">Browse Products</a></div>`;
-}
+const loginForm = document.getElementById("login-form");
+const loginMessage = document.getElementById("login-message");
+loginForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    if (!username || !password) {
+        loginMessage.textContent = "Please enter your name and password.";
+        return;
+    }
+    localStorage.setItem("freshmartUser", username);
+    const nextPage = new URLSearchParams(window.location.search).get("next");
+    window.location.href = nextPage === "cart" ? "cart.html" : "products.html";
+});
 </script>
 </body>
 </html>
